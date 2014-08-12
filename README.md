@@ -22,4 +22,4 @@ list of key, val
 merge
 input list of ( list of (key, val))
 returns
-list of (key,val)
+list of (key,list)
