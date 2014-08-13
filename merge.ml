@@ -10,7 +10,7 @@ let rec print_list_of_pairs contents =
 
 let main() =
     let input= [[(1,"Ocaml");(2,"is")];[(3,"not");(4,"yet");(2,"my")];[(3,"friend")]] in
-    let ans= List.flatten input in
+    let ans= merge input in
     print_list_of_pairs ans;;
 
 main();;
