@@ -33,6 +33,7 @@ let terse_split_imp contents hashfunc hashvals =
     let a= Array.make (List.length hashvals) [] in 
     List.iter (fun x -> Array.set a (hashfunc (fst x)) ((snd x)::(Array.get a (hashfunc (fst x))))) contents;
     Array.to_list a;;    
+(* Mmmmm.... brackety *)
 
 (* print contents of list of strings *)
 let print_list_of_lists contents =  
