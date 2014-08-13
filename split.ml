@@ -13,9 +13,13 @@ let rec split_rec contents hashfunc hashvals lists  =
         h::t -> let lists= (List.map snd (filt contents hashfunc h))::lists in
         split_rec contents hashfunc t lists;;
 
-(* Terse map split *)
+(* map split *)
 let split_map contents hashfunc hashvals =
     List.map (fun x -> List.map snd (filt contents hashfunc x)) hashvals;;
+
+(* Terse map split *)
+let terse_split_map contents hashfunc hashvals =
+    List.map (fun y -> List.map snd (List.filter (fun x -> (hashfunc (fst x) == y)) contents)) hashvals;;   
         
 (* Imperative split *)
 let split_imp contents hashfunc hashvals =
@@ -44,7 +48,7 @@ let main() =
     let ans= split_rec input hash hashvals [] in
     print_list_of_lists ans;
     printf("\n*Split with map*:\n");
-    let ans= split_map input hash hashvals in
+    let ans= terse_split_map input hash hashvals in
     print_list_of_lists ans;;
    
    
