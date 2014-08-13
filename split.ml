@@ -1,20 +1,31 @@
 open Printf
 open List
+open Array
 
 (* Return a list with only those elements where the value is num *)
 let filt list hashfunc num=
     List.filter (fun x -> (hashfunc (fst x) == num)) list
-    
-let rec splitlist contents hashfunc hashvals  lists  =
+
+(* recursive split *)
+let rec split_rec contents hashfunc hashvals lists  =
     match hashvals with
         [] -> lists |
         h::t -> let lists= (List.map snd (filt contents hashfunc h))::lists in
-        splitlist contents hashfunc t lists;;
+        split_rec contents hashfunc t lists;;
 
-let split contents hashfunc hashvals =
-    splitlist contents hashfunc hashvals [];;
+(* Terse map split *)
+let split_map contents hashfunc hashvals =
+    List.map (fun x -> List.map snd (filt contents hashfunc x)) hashvals;;
+        
+(* Imperative split *)
+let split_imp contents hashfunc hashvals =
+    let a= Array.make (List.length hashvals) [] in 
+    List.iter (fun x -> let n= hashfunc (fst x) in
+    Array.set a n ((snd x)::(Array.get a n))) contents;
+    Array.to_list a;;
 
-let rec print_list_of_lists contents =  
+(* print contents of list of strings *)
+let print_list_of_lists contents =  
     List.iter (fun innerlist ->  List.iter (printf "%s ") innerlist; printf "\n") contents;;
 
 (*Hash to five lists*)
@@ -26,7 +37,15 @@ let hashvals =
 
 let main() =
     let input= [(1,"Ocaml");(2,"is");(3,"not");(4,"yet");(2,"my");(3,"friend")] in
-    let ans= split input hash hashvals in
+    printf("\n*Imperative split*:\n");
+    let ans= split_imp input hash hashvals in
+    print_list_of_lists ans;
+    printf("\n*Recursive split*:\n");
+    let ans= split_rec input hash hashvals [] in
+    print_list_of_lists ans;
+    printf("\n*Split with map*:\n");
+    let ans= split_map input hash hashvals in
     print_list_of_lists ans;;
+   
    
 main();;
