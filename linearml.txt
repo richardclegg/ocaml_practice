@@ -1,0 +1,55 @@
+Install plain Ubuntu14.04 VM and install my ssh keys
+
+sudo apt-get install opam geany
+opam init  
+#Answer y to modify bash etc
+eval `opam config env`
+#get some stuff
+#opam installs fail without m4 with obscure error
+sudo apt-get install m4
+opam install ocamlfind
+opam install core utop llvm cstruct
+# WOW core takes an age to install -- 
+# wow much install 
+# such longness many code
+
+opam install core 
+# Fail -- go back for more memory for VM
+opam install core 
+#finally
+
+#Oops llvm failed because I need this
+sudo apt-get install llvm
+
+opam install llvm
+
+# Remember about the install from Anil's book
+sudo apt-get install curl libssl-dev libssl-doc ocaml-native-compilers zlib1g-dev
+#  Edit ~/.ocamlinit
+# add (including #)
+
+#use "topfind";;
+#thread;;
+#camlp4o;;
+#require "core.top";;
+#require "core.syntax";;
+
+opam install \
+    async yojson core_extended core_bench \
+    cohttp async_graphics cryptokit menhir
+
+
+sudo apt-get install git
+
+git clone git@github.com:richardclegg/LinearML.git
+
+
+utop
+utop # open Llvm;;
+Error: Unbound module Llvm                                                      ─( 01:13:21 )─< command 2 >──────────────────────────────────────{ counter: 0 }─utop # #require "llvm";;
+Cannot load required shared library dllllvm.                                    Reason: /home/richard/.opam/system/lib/llvm/./dllllvm.so: /home/richard/.opam/system/lib/llvm/./dllllvm.so: undefined symbol: LLVMGetFirstUse. 
+
+
+#Oh dear -- try some things that might help
+
+sudo apt-get install llvm-dev clang
