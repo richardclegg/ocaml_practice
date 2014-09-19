@@ -1,34 +1,44 @@
-(* Use case for word-count merge from https://sites.google.com/site/farazahmad/pumabenchmarks 
+(* Use case for word-count reduce from https://sites.google.com/site/farazahmad/pumabenchmarks 
 Reduce job input list of word int tuples output is sum by word *)
 
-(* return a word,number tuple and a list of other words *)
+open Printf;; 
+
+(* Output a list of (string,int) *)
+let print_list_of_pairs contents =  
+    List.iter (fun outer -> printf "%s: %d \n" (fst outer) (snd outer)) contents;;   
+
+(* Split a list into a word with a count and remaining words *)
 let rec list_split word count input output =
     match input with 
         [] -> (word,count,output) |
-        h :: t ->
-            let (newword,newcount) = h in 
-                match newword with 
-                    word -> let ctot = count + newcount in
-                        list_split word ctot t output |
-                    _ -> list_split word count t output::h;;
-                    
-                
-                
+        h::t ->
+            (if word = (fst h) then
+                list_split word (count+(snd h)) t output
+            else 
+                list_split word count t (h::output));;
 
-let rec word_count input output = 
+(* Build a list of word,count *)
+let rec rec_word_count input matched = 
     match input with 
-       [] -> output |
+       [] -> matched |
        h::t -> 
-            let (word,count) = h in
-            let (word,count,o) = list_split word count input output in
-                word_count input::(word,count) o;;
+            let (w,c,o) = list_split (fst h) (snd h) t [] in
+                let m= (w,c)::matched in 
+                    rec_word_count o m;;
 
-let print_list_of_pairs contents =  
-    List.iter (fun outer -> printf "%s: %d \n" (fst outer) (snd outer)) contents;;
+
 
 
 let main() =
-    let input= [("OCaml",1);("can",1),("be",2),("OK",1),("OK",1),("OCaml",1)] in
-    let ans= word_count input [] in
+    Random.self_init ();
+    let words= Array.of_list ["OCaml";"is";"not";"my";"friend"] in
+    let input= ref [] in
+    for i = 1 to 1000 do
+        let w = words.(Random.int (Array.length words)) in
+        let doc= (Random.int 1000) in
+        input:= (w,doc)::!input
+    done;
+    let ans= rec_word_count !input [] in
     print_list_of_pairs ans;;
 
+main();;
