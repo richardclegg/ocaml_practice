@@ -74,20 +74,22 @@ let invert_index2 input =
 let invert_index3 input = 
     let remainder= ref input in
     let docs= ref [] in
-    List.iter input (fun (w,d) ->
-        let rem= ref [] in
-        let doclist= ref [] in
-        List.iter !remainder (
-            fun (nw,nd) ->
-                if nw = w then 
-                    doclist:= nd::!doclist
-                else
-                    rem:= (nw,nd)::!rem
-        );
-        if List.length !doclist > 0 then (
-            docs:= (w,!doclist)::!docs;
-            remainder:= !rem
-        )
+    List.iter input (fun x ->
+        match !remainder with 
+            [] -> () | 
+            h::t ->
+            let (w,d)= h in
+            let rem= ref [] in
+            let doclist= ref [d] in
+            List.iter t (
+                fun (nw,nd) ->
+                    if nw = w then 
+                        doclist:= nd::!doclist
+                    else
+                        rem:= (nw,nd)::!rem
+                );
+            remainder:= !rem;
+            docs:= (w,!doclist)::!docs
     );
     !docs
 
